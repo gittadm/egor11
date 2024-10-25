@@ -2,26 +2,65 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\StoreRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function profile()
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
     {
-        $a = ['x' => 1, 'y' => 2];
+        $limit = $request->input('limit', 20);
+        $offset = $request->input('offset', 0);
+        $name = $request->name;
 
-        $text = json_encode($a);
+        $users = User::query();
 
-        $b = json_decode($text, true);
+        if (!empty($name)) {
+            $users->where('name', 'like', '%' . $name . '%');
+        }
 
-        info($text);
-        info($b);
+        $users = $users->orderBy('id')->offset($offset)->limit($limit)->get();
 
-        return response()->json([
-            'user' => 'Ivan',
-            'counts' => [1, 5, 6, 8],
-        ], 200);
+        return response()->json(['users' => $users]);
+    }
 
-        return ['user' => 'Ivan'];
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreRequest $request)
+    {
+        $user = User::create($request->validated());
+
+        return response()->json(['user' => $user]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        return response()->json(['user' => $user]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
     }
 }

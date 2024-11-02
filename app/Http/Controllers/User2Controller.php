@@ -9,6 +9,11 @@ class User2Controller extends Controller
 {
     public function profile()
     {
+        return response()->json([
+            'user' => auth()->user(),
+            'counts' => [1, 5, 6, 8],
+        ], 200);
+
         $task1 = new Task1('test text');
 
         //$task1->text = '33';
@@ -25,7 +30,7 @@ class User2Controller extends Controller
         info($b);
 
         return response()->json([
-            'user' => 'Ivan',
+            'user' => auth()->user(),
             'counts' => [1, 5, 6, 8],
         ], 200);
 

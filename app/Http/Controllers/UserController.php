@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\User\StoreRequest;
+use App\Http\Resources\ManagerUserResource;
+use App\Http\Resources\UserCollection;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -23,9 +25,11 @@ class UserController extends Controller
             $users->where('name', 'like', '%' . $name . '%');
         }
 
-        $users = $users->orderBy('id')->offset($offset)->limit($limit)->get();
+        $users = $users->orderBy('id')->offset($offset)->limit($limit)->paginate(2);
 
-        return response()->json(['users' => $users]);
+        // return response()->json(['users' => ManagerUserResource::collection($users)]);
+        return UserCollection::make($users);
+        return response()->json(['users' => UserCollection::make($users)]);
     }
 
     /**
@@ -43,9 +47,10 @@ class UserController extends Controller
      */
     public function show(int $id)
     {
+        $user = User::with('books')->findOrFail($id);
         $user = User::findOrFail($id);
 
-        return response()->json(['user' => $user]);
+        return response()->json(['user' => ManagerUserResource::make($user)]);
     }
 
     /**

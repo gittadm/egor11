@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ManagerUserResource extends JsonResource
+class BookResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,12 +15,8 @@ class ManagerUserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
             'name' => $this->name,
-            'is_email' => (bool) $this->email,
-            'format_full_name' => $this->format_full_name,
-            'new_field' => $this->when($this->id === 1, '1111111111111111'),
-            'books' => BookResource::collection($this->whenLoaded('books')),
+            'author' => $this->author,
         ];
     }
 }
